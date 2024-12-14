@@ -19,7 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $contrasena = $_POST['contrasena'];
 
     // Insertar los datos en la base de datos
-    $sql = "INSERT INTO usuarios (correo, contrasena) VALUES ('$correo', '$contrasena')";
+    $stmt = $conn->prepare("INSERT INTO usuarios (correo, contrasena) VALUES (?, ?)");
+$stmt->bind_param("ss", $correo, $contrasena);
+$stmt->execute();
+$stmt->close();
+
 
     if ($conn->query($sql) === TRUE) {
         // Redirigir al enlace proporcionado
